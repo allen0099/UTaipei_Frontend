@@ -1,8 +1,8 @@
 import * as React from "react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import theme from "@/theme";
+import Theme from "@/Theme";
+import { CssBaseline } from "@mui/material";
+import RootLayout from "@/components/RootLayout";
 
 export const viewport = {
   themeColor: [
@@ -33,16 +33,17 @@ export const metadata = {
   description: "以舒服的介面查詢課程、根據時間排出理想課表，選課不再頭疼~",
 };
 
-export default function RootLayout(props) {
+export default function Layout(props) {
   return (
     <html lang="en">
       <body>
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-          <ThemeProvider theme={theme}>
+          <Theme>
             {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
             <CssBaseline />
+            <RootLayout />
             {props.children}
-          </ThemeProvider>
+          </Theme>
         </AppRouterCacheProvider>
       </body>
     </html>
