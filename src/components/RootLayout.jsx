@@ -1,5 +1,6 @@
 "use client";
 import { AppBar, Container, Toolbar, Typography } from "@mui/material";
+import NotificationDialog from "@/components/NotificationDialog";
 
 function RootBar() {
   return (
@@ -16,6 +17,7 @@ function RootBar() {
           </Typography>
         </Toolbar>
       </Container>
+      <NotificationDialog />
     </AppBar>
   );
 }
