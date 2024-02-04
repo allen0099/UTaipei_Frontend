@@ -67,7 +67,7 @@ function TimeoutButton(props) {
 
   return (
     <Button disabled={disabled} {...other}>
-      {time > 0 ? `等待 ${time} 秒` : "已了解，三天內不提示"}
+      {time > 0 ? `等待 ${time} 秒` : "我理解以上內容，三天內不提示"}
     </Button>
   );
 }

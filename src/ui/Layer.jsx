@@ -1,6 +1,7 @@
 "use client";
 import { AppBar, Container, Toolbar, Typography } from "@mui/material";
 import NotificationDialog from "@/components/NotificationDialog";
+import Footer from "@/ui/Footer";
 
 function RootBar() {
   return (
@@ -22,6 +23,12 @@ function RootBar() {
   );
 }
 
-export default function RootLayout() {
-  return <RootBar />;
+export default function Layer(props) {
+  return (
+    <>
+      <RootBar />
+      {props.children}
+      <Footer />
+    </>
+  );
 }

@@ -2,7 +2,8 @@ import * as React from "react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import Theme from "@/Theme";
 import { CssBaseline } from "@mui/material";
-import RootLayout from "@/components/RootLayout";
+import Layer from "@/ui/Layer";
+import Box from "@mui/material/Box";
 
 export const viewport = {
   themeColor: [
@@ -41,8 +42,9 @@ export default function Layout(props) {
           <Theme>
             {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
             <CssBaseline />
-            <RootLayout />
-            {props.children}
+            <Layer>
+              <Box sx={{ minHeight: "100vh" }}>{props.children}</Box>
+            </Layer>
           </Theme>
         </AppRouterCacheProvider>
       </body>
