@@ -10,6 +10,7 @@ import {
   Link,
   Typography,
 } from "@mui/material";
+import { useCookies } from "react-cookie";
 
 const sampleJson = [
   { text: "【說明】", href: null, linebreak: false },
@@ -73,15 +74,24 @@ function TimeoutButton(props) {
 
 export default function NotificationDialog() {
   const [open, setOpen] = React.useState(true);
+  const [cookies, setCookie, removeCookie] = useCookies([
+    "acceptedNotification",
+  ]);
+
+  const notificationAccepted = cookies.acceptedNotification === true;
 
   const handleClose = (value) => {
     setOpen(false);
+    setCookie("acceptedNotification", "true", {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 3,
+    });
   };
 
   return (
     <Dialog
       sx={{ "& .MuiDialog-paper": { width: "80%" } }}
-      open={open}
+      open={!notificationAccepted && open}
       maxWidth="md"
     >
       <DialogTitle>學校公告</DialogTitle>
