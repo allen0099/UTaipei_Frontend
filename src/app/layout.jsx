@@ -43,7 +43,7 @@ export default function Layout(props) {
             {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
             <CssBaseline />
             <Layer>
-              <Box sx={{ minHeight: "100vh" }}>{props.children}</Box>
+              <Box sx={{ minHeight: "85vh" }}>{props.children}</Box>
             </Layer>
           </Theme>
         </AppRouterCacheProvider>
