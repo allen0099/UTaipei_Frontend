@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -12,47 +13,12 @@ import {
 } from "@mui/material";
 import { useCookies } from "react-cookie";
 
-const sampleJson = [
-  { text: "【說明】", href: null, linebreak: false },
-  {
-    text: "",
-    href: null,
-    linebreak: true,
-  },
-  {
-    text: "文字串一",
-    href: null,
-    linebreak: false,
-  },
-  {
-    text: "覆蓋二",
-    href: null,
-    linebreak: false,
-  },
-  { text: "", href: null, linebreak: true },
-  {
-    text: "https://google.com",
-    href: "https://google.com",
-    linebreak: false,
-  },
-  {
-    text: "",
-    href: null,
-    linebreak: true,
-  },
-  {
-    text: "測試用網址",
-    href: "https://www.google.com",
-    linebreak: false,
-  },
-];
-
 function TimeoutButton(props) {
   const { ...other } = props;
-  const [time, setTime] = React.useState(5);
-  const [disabled, setDisabled] = React.useState(true);
+  const [time, setTime] = useState(5);
+  const [disabled, setDisabled] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const timer = setInterval(() => {
       setTime((prevTime) => {
         if (prevTime === 1) {
@@ -73,10 +39,12 @@ function TimeoutButton(props) {
 }
 
 export default function NotificationDialog() {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
   const [cookies, setCookie, removeCookie] = useCookies([
     "acceptedNotification",
   ]);
+  const [data, setData] = useState(null);
+  const [isLoading, setLoading] = useState(true);
 
   const notificationAccepted = cookies.acceptedNotification === true;
 
@@ -88,6 +56,39 @@ export default function NotificationDialog() {
     });
   };
 
+  useEffect(() => {
+    fetch("http://localhost:8000/api/notification")
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data);
+        setLoading(false);
+      });
+  }, []);
+
+  let dialogContent = <DialogContentText>取得學校公告中...</DialogContentText>;
+
+  if (data) {
+    dialogContent = (
+      <DialogContentText id="alert-dialog-description">
+        {data.data.map((item, index) => {
+          if (item.linebreak) return <br key={index} />;
+          return item.href ? (
+            <Link href={item.href} key={index}>
+              {item.text}
+            </Link>
+          ) : (
+            <Typography key={index} display="inline">
+              {item.text}
+            </Typography>
+          );
+        })}
+        <Typography color="error">
+          <strong>注意：</strong>本內容僅供參考，請以學校公告為準。
+        </Typography>
+      </DialogContentText>
+    );
+  }
+
   return (
     <Dialog
       sx={{ "& .MuiDialog-paper": { width: "80%" } }}
@@ -95,25 +96,7 @@ export default function NotificationDialog() {
       maxWidth="md"
     >
       <DialogTitle>學校公告</DialogTitle>
-      <DialogContent dividers>
-        <DialogContentText id="alert-dialog-description">
-          {sampleJson.map((item, index) => {
-            if (item.linebreak) return <br key={index} />;
-            return item.href ? (
-              <Link href={item.href} key={index}>
-                {item.text}
-              </Link>
-            ) : (
-              <Typography key={index} display="inline">
-                {item.text}
-              </Typography>
-            );
-          })}
-          <Typography color="error">
-            <strong>注意：</strong>本內容僅供參考，請以學校公告為準。
-          </Typography>
-        </DialogContentText>
-      </DialogContent>
+      <DialogContent dividers>{dialogContent}</DialogContent>
       <DialogActions>
         <TimeoutButton onClick={handleClose} />
       </DialogActions>
