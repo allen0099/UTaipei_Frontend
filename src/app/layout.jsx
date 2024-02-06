@@ -4,6 +4,8 @@ import Theme from "@/Theme";
 import { CssBaseline } from "@mui/material";
 import Layer from "@/ui/Layer";
 import Box from "@mui/material/Box";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const viewport = {
   themeColor: [
@@ -47,6 +49,8 @@ export default function Layout(props) {
             </Layer>
           </Theme>
         </AppRouterCacheProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
