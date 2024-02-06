@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useCookies } from "react-cookie";
+import { getNotification } from "@/api/api";
 
 function TimeoutButton(props) {
   const { ...other } = props;
@@ -39,16 +40,13 @@ function TimeoutButton(props) {
 }
 
 export default function NotificationDialog() {
-  const [open, setOpen] = useState(true);
-  const [cookies, setCookie, removeCookie] = useCookies([
-    "acceptedNotification",
-  ]);
+  const [open, setOpen] = useState(false);
+  const [cookies, setCookie] = useCookies(["acceptedNotification"]);
   const [data, setData] = useState(null);
-  const [isLoading, setLoading] = useState(true);
 
   const notificationAccepted = cookies.acceptedNotification === true;
 
-  const handleClose = (value) => {
+  const handleClose = () => {
     setOpen(false);
     setCookie("acceptedNotification", "true", {
       path: "/",
@@ -57,36 +55,14 @@ export default function NotificationDialog() {
   };
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/notification")
-      .then((res) => res.json())
-      .then((data) => {
-        setData(data);
-        setLoading(false);
-      });
-  }, []);
+    if (!open) return;
+    getNotification().then((data) => {
+      setData(data);
+    });
+  }, [open]);
 
-  let dialogContent = <DialogContentText>取得學校公告中...</DialogContentText>;
-
-  if (data) {
-    dialogContent = (
-      <DialogContentText id="alert-dialog-description">
-        {data.data.map((item, index) => {
-          if (item.linebreak) return <br key={index} />;
-          return item.href ? (
-            <Link href={item.href} key={index}>
-              {item.text}
-            </Link>
-          ) : (
-            <Typography key={index} display="inline">
-              {item.text}
-            </Typography>
-          );
-        })}
-        <Typography color="error">
-          <strong>注意：</strong>本內容僅供參考，請以學校公告為準。
-        </Typography>
-      </DialogContentText>
-    );
+  if (!notificationAccepted && !open) {
+    setOpen(true);
   }
 
   return (
@@ -96,7 +72,29 @@ export default function NotificationDialog() {
       maxWidth="md"
     >
       <DialogTitle>學校公告</DialogTitle>
-      <DialogContent dividers>{dialogContent}</DialogContent>
+      <DialogContent dividers>
+        {data ? (
+          <DialogContentText id="alert-dialog-description">
+            {data.data.map((item, index) => {
+              if (item.linebreak) return <br key={index} />;
+              return item.href ? (
+                <Link href={item.href} key={index}>
+                  {item.text}
+                </Link>
+              ) : (
+                <Typography key={index} display="inline">
+                  {item.text}
+                </Typography>
+              );
+            })}
+            <Typography color="error">
+              <strong>注意：</strong>本內容僅供參考，請以學校公告為準。
+            </Typography>
+          </DialogContentText>
+        ) : (
+          <DialogContentText>取得學校公告中...</DialogContentText>
+        )}
+      </DialogContent>
       <DialogActions>
         <TimeoutButton onClick={handleClose} />
       </DialogActions>
