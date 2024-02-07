@@ -23,7 +23,7 @@ function Copyright() {
           color="inherit"
           href={`${process.env.NEXT_PUBLIC_COPYRIGHT_URL}`}
         >
-          選課幫手
+          選課小幫手
         </MuiLink>{" "}
         {new Date().getFullYear()}
         {"."}

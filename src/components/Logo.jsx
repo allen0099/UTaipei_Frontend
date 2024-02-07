@@ -17,7 +17,7 @@ export default function Logo(props) {
           textDecoration: "none",
         }}
       >
-        選課助手
+        選課小幫手
       </Typography>
     </Box>
   );

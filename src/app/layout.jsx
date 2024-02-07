@@ -16,8 +16,8 @@ export const viewport = {
 
 export const metadata = {
   title: {
-    template: "選課幫手 - %s",
-    default: "選課幫手",
+    template: "選課小幫手 - %s",
+    default: "選課小幫手",
   },
   keywords: [
     "臺北市立大學",
