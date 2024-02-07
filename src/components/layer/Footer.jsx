@@ -19,8 +19,11 @@ function Copyright() {
       </Typography>
       <Typography variant="body2" color="text.secondary">
         {"Copyright © "}
-        <MuiLink color="inherit" href="https://mui.com/">
-          Your Website
+        <MuiLink
+          color="inherit"
+          href={`${process.env.NEXT_PUBLIC_COPYRIGHT_URL}`}
+        >
+          選課幫手
         </MuiLink>{" "}
         {new Date().getFullYear()}
         {"."}

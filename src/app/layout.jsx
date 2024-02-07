@@ -1,11 +1,11 @@
 import * as React from "react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
-import Theme from "@/Theme";
 import { CssBaseline } from "@mui/material";
-import Layer from "@/ui/Layer";
 import Box from "@mui/material/Box";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import Theme from "@/theme/Theme";
+import Layer from "@/components/layer/Layer";
 
 export const viewport = {
   themeColor: [

@@ -2,7 +2,7 @@
 import * as React from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { BaseFont } from "@/Fonts";
+import { BaseFont } from "@/theme/Fonts";
 
 const commonOptions = {
   palette: {
@@ -25,14 +25,7 @@ export default function Theme(props) {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
   const theme = React.useMemo(() => {
-    if (prefersDarkMode) {
-      return createTheme({
-        ...commonOptions,
-        palette: {
-          mode: "dark",
-        },
-      });
-    } else {
+    if (!prefersDarkMode) {
       return createTheme({
         ...commonOptions,
         palette: {
@@ -41,6 +34,13 @@ export default function Theme(props) {
             default: "#f9f9fb",
             paper: "#f9f9fb",
           },
+        },
+      });
+    } else {
+      return createTheme({
+        ...commonOptions,
+        palette: {
+          mode: "dark",
         },
       });
     }
