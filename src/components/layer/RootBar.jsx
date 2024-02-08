@@ -9,9 +9,8 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Logo from "@/components/Logo";
 import { Menu, MenuItem, Typography } from "@mui/material";
-import NotificationDialog from "@/components/NotificationDialog";
 
-const pages = ["Products", "Pricing", "Blog"];
+const pages = ["已選課程", "模擬排課"];
 
 function RootBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -106,7 +105,6 @@ function RootBar() {
           </Box>
         </Toolbar>
       </Container>
-      <NotificationDialog />
     </AppBar>
   );
 }
