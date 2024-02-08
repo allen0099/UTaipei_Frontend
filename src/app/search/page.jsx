@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import { get_school_year, get_semester } from "@/school";
-import { getCategory, getUnit } from "@/api/api";
+import { getCategory, getCourse, getUnit } from "@/api/api";
 
 const selectStyle = {
   m: 1,
@@ -135,6 +135,22 @@ export default function Home() {
     setCategory(event.target.value);
   };
 
+  const getCourses = () => {
+    getCourse(
+      year,
+      semester,
+      degree,
+      department,
+      unit,
+      grade,
+      category,
+      "", // Subject
+      "", // Teacher
+    ).then((res) => {
+      console.log(res.data);
+    });
+  };
+
   return (
     <Container maxWidth="lg">
       <Box
@@ -226,6 +242,7 @@ export default function Home() {
             handleChangeCategory={updateCategory}
           />
           <Button
+            onClick={getCourses}
             variant="contained"
             sx={{
               my: 2,
