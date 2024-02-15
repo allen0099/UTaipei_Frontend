@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useCookies } from "react-cookie";
-import { getNotification } from "@/api/api";
+import { useNotification } from "@/swr/base";
 
 function TimeoutButton(props) {
   const { ...other } = props;
@@ -42,7 +42,7 @@ function TimeoutButton(props) {
 export default function NotificationDialog() {
   const [open, setOpen] = useState(false);
   const [cookies, setCookie] = useCookies(["acceptedNotification"]);
-  const [data, setData] = useState(null);
+  const { notification, isLoading, isError } = useNotification(open);
 
   const notificationAccepted = cookies.acceptedNotification === true;
 
@@ -53,13 +53,6 @@ export default function NotificationDialog() {
       maxAge: 60 * 60 * 24 * 3,
     });
   };
-
-  useEffect(() => {
-    if (!open) return;
-    getNotification().then((data) => {
-      setData(data);
-    });
-  }, [open]);
 
   if (!notificationAccepted && !open) {
     setOpen(true);
@@ -73,9 +66,12 @@ export default function NotificationDialog() {
     >
       <DialogTitle>學校公告</DialogTitle>
       <DialogContent dividers>
-        {data ? (
+        {isError && <DialogContentText>無法取得公告</DialogContentText>}
+        {isLoading ? (
+          <DialogContentText>取得學校公告中...</DialogContentText>
+        ) : (
           <DialogContentText id="alert-dialog-description">
-            {data.data.map((item, index) => {
+            {notification.data.map((item, index) => {
               if (item.linebreak) return <br key={index} />;
               return item.href ? (
                 <Link href={item.href} key={index}>
@@ -91,8 +87,6 @@ export default function NotificationDialog() {
               <strong>注意：</strong>本內容僅供參考，請以學校公告為準。
             </Typography>
           </DialogContentText>
-        ) : (
-          <DialogContentText>取得學校公告中...</DialogContentText>
         )}
       </DialogContent>
       <DialogActions>
