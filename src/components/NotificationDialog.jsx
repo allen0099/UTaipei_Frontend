@@ -15,7 +15,7 @@ import { useCookies } from "react-cookie";
 import { useNotification } from "@/swr/base";
 
 function TimeoutButton(props) {
-  const { ...other } = props;
+  const { isError, ...other } = props;
   const [time, setTime] = useState(5);
   const [disabled, setDisabled] = useState(true);
 
@@ -33,8 +33,12 @@ function TimeoutButton(props) {
   }, []);
 
   return (
-    <Button disabled={disabled} {...other}>
-      {time > 0 ? `等待 ${time} 秒` : "我理解以上內容，三天內不提示"}
+    <Button disabled={disabled || isError} {...other}>
+      {time > 0
+        ? `等待 ${time} 秒`
+        : isError
+          ? "發生錯誤，稍後再試"
+          : "我理解以上內容，三天內不提示"}
     </Button>
   );
 }
@@ -66,9 +70,10 @@ export default function NotificationDialog() {
     >
       <DialogTitle>學校公告</DialogTitle>
       <DialogContent dividers>
-        {isError && <DialogContentText>無法取得公告</DialogContentText>}
         {isLoading ? (
-          <DialogContentText>取得學校公告中...</DialogContentText>
+          <DialogContentText color={isError && "error"}>
+            {isError ? "伺服器錯誤，無法取得公告" : "取得學校公告中..."}
+          </DialogContentText>
         ) : (
           <DialogContentText id="alert-dialog-description">
             {notification.data.map((item, index) => {
@@ -90,7 +95,7 @@ export default function NotificationDialog() {
         )}
       </DialogContent>
       <DialogActions>
-        <TimeoutButton onClick={handleClose} />
+        <TimeoutButton onClick={handleClose} isError={isError} />
       </DialogActions>
     </Dialog>
   );
