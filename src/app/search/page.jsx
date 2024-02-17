@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import { useContext } from "react";
 import {
   Box,
   Button,
@@ -16,6 +17,7 @@ import DepartmentSelector from "@/components/search/DepartmentSelector";
 import UnitSelector from "@/components/search/UnitSelector";
 import GradeSelector from "@/components/search/GradeSelector";
 import CategorySelector from "@/components/search/CategorySelector";
+import { ChosenContext } from "@/contexts/choose";
 
 const commonStyle = {
   m: 1,
@@ -37,15 +39,14 @@ const SearchHead = ({ values }) => {
 
 export default function Home() {
   const router = useRouter();
+  const { setChosenContext } = useContext(ChosenContext);
 
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      // alert(JSON.stringify(values, null, 2));
-
-      const searchParams = new URLSearchParams(values);
-      router.push("/result" + `?${searchParams.toString()}`);
+      setChosenContext(values);
+      router.push("/result");
     },
   });
 

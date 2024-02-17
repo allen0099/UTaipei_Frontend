@@ -1,6 +1,7 @@
 "use client";
 import * as React from "react";
-import { useSearchParams } from "next/navigation";
+import { useContext } from "react";
+import { redirect } from "next/navigation";
 import useSWRImmutable from "swr/immutable";
 import {
   Button,
@@ -15,13 +16,41 @@ import {
   Typography,
 } from "@mui/material";
 import fetcher from "@/swr/base";
+import { ChosenContext } from "@/contexts/choose";
 
 export default function Home() {
-  const searchParams = useSearchParams();
+  const { chosenContext } = useContext(ChosenContext);
+  if (Object.keys(chosenContext).length === 0) redirect("/search");
+
+  const searchParams = new URLSearchParams(chosenContext);
+
   const { data } = useSWRImmutable(
     "/api/courses" + `?${searchParams.toString()}`,
     fetcher,
   );
+
+  const dataList = data?.data;
+
+  if (!dataList) {
+    return (
+      <Container maxWidth="lg">
+        <Typography variant="h4" textAlign="center">
+          資料載入中...
+        </Typography>
+      </Container>
+    );
+  }
+
+  if (dataList.length === 0) {
+    return (
+      <Container maxWidth="lg">
+        <Typography variant="h4" textAlign="center">
+          您所選取的範圍查無資料
+          <Button>返回查詢頁面</Button>
+        </Typography>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="lg">
@@ -94,9 +123,9 @@ export default function Home() {
                     <TableCell rowSpan={rowSpan}>{row.campus}</TableCell>
                     <TableCell>{row.teachers[0]}</TableCell>
                     <TableCell rowSpan={rowSpan}>
-                      {row.times.map((time) => {
+                      {row.times.map((time, index) => {
                         return (
-                          <div key={time.day}>
+                          <div key={String(time.day) + index}>
                             {time.day}
                             {time.time.length > 0 ? " / " : ""}
                             {time.time.join(", ")}
