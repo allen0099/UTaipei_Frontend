@@ -46,7 +46,7 @@ export default function Home() {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       setChosenContext(values);
-      router.push("/result");
+      router.replace("/result");
     },
   });
 

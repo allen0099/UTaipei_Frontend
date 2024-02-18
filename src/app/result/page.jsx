@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { useContext } from "react";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import useSWRImmutable from "swr/immutable";
 import {
   Button,
@@ -19,10 +19,28 @@ import {
 import fetcher from "@/swr/base";
 import { ChosenContext } from "@/contexts/choose";
 
+const BaseContainer = ({ children }) => {
+  return (
+    <Container
+      maxWidth="lg"
+      sx={{
+        my: 4,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      {children}
+    </Container>
+  );
+};
+
 export default function Home() {
   const { chosenContext } = useContext(ChosenContext);
   if (Object.keys(chosenContext).length === 0) redirect("/search");
 
+  const router = useRouter();
   const searchParams = new URLSearchParams(chosenContext);
 
   const { data } = useSWRImmutable(
@@ -34,27 +52,35 @@ export default function Home() {
 
   if (!dataList) {
     return (
-      <Container maxWidth="lg">
+      <BaseContainer>
         <Typography variant="h4" textAlign="center">
           資料載入中...
         </Typography>
-      </Container>
+      </BaseContainer>
     );
   }
 
   if (dataList.length === 0) {
     return (
-      <Container maxWidth="lg">
+      <BaseContainer>
         <Typography variant="h4" textAlign="center">
           您所選取的範圍查無資料
-          <Button>返回查詢頁面</Button>
         </Typography>
-      </Container>
+        <Button
+          onClick={() => router.replace("/search")}
+          sx={{
+            my: 2,
+          }}
+        >
+          返回查詢頁面
+        </Button>
+      </BaseContainer>
     );
   }
 
   return (
     <Container maxWidth="lg">
+      {/*<Typography>{JSON.stringify(chosenContext)}</Typography>*/}
       <TableContainer component={Paper}>
         <Table
           sx={{
