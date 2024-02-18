@@ -17,8 +17,8 @@ export const viewport = {
 export const metadata = {
   metadataBase: new URL("https://utc.allen0099.tw/"),
   title: {
-    template: "選課小幫手 - %s",
-    default: "選課小幫手",
+    template: "北市大選課小幫手 - %s",
+    default: "北市大選課小幫手",
   },
   keywords: [
     "臺北市立大學",
