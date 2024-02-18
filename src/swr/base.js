@@ -18,8 +18,6 @@ const fetcher = (path, params = {}) => {
     path += `?${searchParams.toString()}`;
   }
 
-  console.log("Path: ", path);
-
   return fetch(`${url}${path}`).then((res) => res.json());
 };
 
