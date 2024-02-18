@@ -15,30 +15,32 @@ import { useCookies } from "react-cookie";
 import { useNotification } from "@/swr/base";
 
 function TimeoutButton(props) {
-  const { isError, ...other } = props;
+  const { open, ...other } = props;
   const [time, setTime] = useState(5);
   const [disabled, setDisabled] = useState(true);
+  const { isLoading, isError } = useNotification(open);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTime((prevTime) => {
-        if (prevTime === 1) {
-          clearInterval(timer);
-          setDisabled(false);
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+    if (!isLoading && !isError) {
+      const timer = setInterval(() => {
+        setTime((prevTime) => {
+          if (prevTime === 1) {
+            clearInterval(timer);
+            setDisabled(false);
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [isError, isLoading]);
+
+  if (isError) return <Button disabled>發生錯誤，稍後再試</Button>;
+  if (isLoading) return <Button disabled>取得資料中...</Button>;
 
   return (
     <Button disabled={disabled || isError} {...other}>
-      {time > 0
-        ? `等待 ${time} 秒`
-        : isError
-          ? "發生錯誤，稍後再試"
-          : "我理解以上內容，三天內不提示"}
+      {time > 0 ? `等待 ${time} 秒` : "我理解以上內容，三天內不提示"}
     </Button>
   );
 }
@@ -62,6 +64,34 @@ export default function NotificationDialog() {
     setOpen(true);
   }
 
+  const contentText = isError ? (
+    <DialogContentText color="error" id="alert-dialog-description">
+      伺服器錯誤，無法取得公告
+    </DialogContentText>
+  ) : isLoading ? (
+    <DialogContentText id="alert-dialog-description">
+      取得學校公告中...
+    </DialogContentText>
+  ) : (
+    <DialogContentText id="alert-dialog-description">
+      {notification.data.map((item, index) => {
+        if (item.linebreak) return <br key={index} />;
+        return item.href ? (
+          <Link href={item.href} key={index}>
+            {item.text}
+          </Link>
+        ) : (
+          <Typography key={index} display="inline">
+            {item.text}
+          </Typography>
+        );
+      })}
+      <Typography color="error">
+        <strong>注意：</strong>本內容僅供參考，請以學校公告為準。
+      </Typography>
+    </DialogContentText>
+  );
+
   return (
     <Dialog
       sx={{ "& .MuiDialog-paper": { width: "80%" } }}
@@ -69,33 +99,9 @@ export default function NotificationDialog() {
       maxWidth="md"
     >
       <DialogTitle>學校公告</DialogTitle>
-      <DialogContent dividers>
-        {isLoading ? (
-          <DialogContentText color={isError && "error"}>
-            {isError ? "伺服器錯誤，無法取得公告" : "取得學校公告中..."}
-          </DialogContentText>
-        ) : (
-          <DialogContentText id="alert-dialog-description">
-            {notification.data.map((item, index) => {
-              if (item.linebreak) return <br key={index} />;
-              return item.href ? (
-                <Link href={item.href} key={index}>
-                  {item.text}
-                </Link>
-              ) : (
-                <Typography key={index} display="inline">
-                  {item.text}
-                </Typography>
-              );
-            })}
-            <Typography color="error">
-              <strong>注意：</strong>本內容僅供參考，請以學校公告為準。
-            </Typography>
-          </DialogContentText>
-        )}
-      </DialogContent>
+      <DialogContent dividers>{contentText}</DialogContent>
       <DialogActions>
-        <TimeoutButton onClick={handleClose} isError={isError} />
+        <TimeoutButton open={open} onClick={handleClose} />
       </DialogActions>
     </Dialog>
   );
