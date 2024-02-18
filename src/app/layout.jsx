@@ -41,7 +41,7 @@ export const metadata = {
     description:
       "輕鬆查詢課程、依時間排課，讓選課不再是煩惱！立即探索，輕鬆管理您的學習計劃！",
     url: "/",
-    siteName: "Next.js",
+    siteName: "臺北市立大學 - 選課小幫手",
     images: [
       {
         url: "/api/og", // Must be an absolute URL
