@@ -13,6 +13,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import fetcher from "@/swr/base";
@@ -60,16 +61,24 @@ export default function Home() {
             whiteSpace: "nowrap",
           }}
         >
-          <TableHead>
+          <TableHead
+            sx={{
+              whiteSpace: "normal",
+            }}
+          >
             <TableRow>
               <TableCell rowSpan={2}>班級</TableCell>
               <TableCell rowSpan={2}>類別</TableCell>
-              <TableCell rowSpan={2}>課程名稱</TableCell>
-              <TableCell rowSpan={2}>學分數</TableCell>
-              <TableCell rowSpan={2}>授課時數</TableCell>
-              <TableCell rowSpan={2}>開課別</TableCell>
-              <TableCell rowSpan={2}>必選修</TableCell>
-              <TableCell colSpan={3} align={"center"}>
+              <TableCell
+                rowSpan={2}
+                sx={{
+                  maxWidth: "200px",
+                }}
+              >
+                課程名稱
+              </TableCell>
+              <TableCell rowSpan={2}>選修別與學分</TableCell>
+              <TableCell colSpan={2} align={"center"}>
                 人數
               </TableCell>
               <TableCell rowSpan={2}>校區</TableCell>
@@ -78,8 +87,7 @@ export default function Home() {
               <TableCell rowSpan={2}>備註</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>下限</TableCell>
-              <TableCell>上限</TableCell>
+              <TableCell>限制</TableCell>
               <TableCell>目前</TableCell>
             </TableRow>
           </TableHead>
@@ -89,6 +97,7 @@ export default function Home() {
               return (
                 <>
                   <TableRow
+                    hover
                     key={row.course_code}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
@@ -98,26 +107,54 @@ export default function Home() {
                       {row.course_code}
                     </TableCell>
                     <TableCell rowSpan={rowSpan}>{row.category}</TableCell>
-                    <TableCell rowSpan={rowSpan}>
+                    <TableCell
+                      rowSpan={rowSpan}
+                      sx={{
+                        maxWidth: "200px",
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                      }}
+                    >
                       <Typography color={"red"}>
                         {row.name.chinese.tag ? row.name.chinese.tag : ""}
                       </Typography>
-                      {row.name.chinese.text}
+                      <Tooltip
+                        title={
+                          <React.Fragment>
+                            <Typography color="inherit" variant="caption">
+                              {row.name.chinese.text}
+                            </Typography>
+                          </React.Fragment>
+                        }
+                      >
+                        {row.name.chinese.text}
+                      </Tooltip>
                       <br />
                       <Typography color={"red"}>
                         {row.name.english.tag ? row.name.english.tag : ""}
                       </Typography>
-                      {row.name.english.text}
+                      <Tooltip
+                        title={
+                          <React.Fragment>
+                            <Typography color="inherit" variant="caption">
+                              {row.name.english.text}
+                            </Typography>
+                          </React.Fragment>
+                        }
+                      >
+                        {row.name.english.text}
+                      </Tooltip>
                     </TableCell>
-                    <TableCell rowSpan={rowSpan}>{row.credit}</TableCell>
                     <TableCell rowSpan={rowSpan}>
-                      {row.lecturing_hours}
+                      {row.full_half} | {row.req_select}
+                      <br />
+                      {row.credit} 學分 / {row.lecturing_hours} 小時
                     </TableCell>
-                    <TableCell rowSpan={rowSpan}>{row.full_half}</TableCell>
-                    <TableCell rowSpan={rowSpan}>{row.req_select}</TableCell>
-                    <TableCell rowSpan={rowSpan}>{row.enrolled.min}</TableCell>
-                    <TableCell rowSpan={rowSpan}>{row.enrolled.max}</TableCell>
-                    <TableCell rowSpan={rowSpan}>
+                    <TableCell rowSpan={rowSpan} align="center">
+                      {row.enrolled.min} <br />
+                      {row.enrolled.max}
+                    </TableCell>
+                    <TableCell rowSpan={rowSpan} align="center">
                       {row.enrolled.current}
                     </TableCell>
                     <TableCell rowSpan={rowSpan}>{row.campus}</TableCell>
