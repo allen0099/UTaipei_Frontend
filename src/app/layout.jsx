@@ -15,6 +15,7 @@ export const viewport = {
 };
 
 export const metadata = {
+  metadataBase: new URL("https://utc.allen0099.tw/"),
   title: {
     template: "選課小幫手 - %s",
     default: "選課小幫手",
@@ -39,16 +40,16 @@ export const metadata = {
     title: "臺北市立大學 - 選課小幫手",
     description:
       "輕鬆查詢課程、依時間排課，讓選課不再是煩惱！立即探索，輕鬆管理您的學習計劃！",
-    url: "https://utc.allen0099.tw",
+    url: "/",
     siteName: "Next.js",
     images: [
       {
-        url: "https://utc.allen0099.tw/api/og", // Must be an absolute URL
+        url: "/api/og", // Must be an absolute URL
         width: 800,
         height: 600,
       },
       {
-        url: "https://utc.allen0099.tw/api/og", // Must be an absolute URL
+        url: "/api/og", // Must be an absolute URL
         width: 1800,
         height: 1600,
         alt: "選課小幫手",
@@ -65,7 +66,7 @@ export const metadata = {
     siteId: "798127600384151552",
     creator: "@_allen0099",
     creatorId: "798127600384151552",
-    images: ["https://utc.allen0099.tw/api/og"], // Must be an absolute URL
+    images: ["/api/og"], // Must be an absolute URL
   },
 };
 
