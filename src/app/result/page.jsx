@@ -153,7 +153,7 @@ export default function Home() {
                           </React.Fragment>
                         }
                       >
-                        {row.name.chinese.text}
+                        <>{row.name.chinese.text}</>
                       </Tooltip>
                       <br />
                       <Typography color={"red"}>
@@ -168,7 +168,7 @@ export default function Home() {
                           </React.Fragment>
                         }
                       >
-                        {row.name.english.text}
+                        <>{row.name.english.text}</>
                       </Tooltip>
                     </TableCell>
                     <TableCell rowSpan={rowSpan}>
