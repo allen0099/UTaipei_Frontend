@@ -29,6 +29,7 @@ export default function Theme(props) {
       return createTheme({
         ...commonOptions,
         palette: {
+          ...commonOptions.palette,
           mode: "light",
           background: {
             default: "#f9f9fb",
