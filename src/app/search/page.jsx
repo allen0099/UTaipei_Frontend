@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
+import { sendGTMEvent } from "@next/third-parties/google";
 import { initialValues, validationSchema } from "@/validations/search";
 import DegreeSelector from "@/components/search/DegreeSelector";
 import DepartmentSelector from "@/components/search/DepartmentSelector";
@@ -46,6 +47,7 @@ export default function Home() {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       setChosenContext(values);
+      sendGTMEvent({ event: "searchContext", value: values });
       router.replace("/result");
     },
   });

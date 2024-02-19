@@ -2,8 +2,10 @@ import * as React from "react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import { CssBaseline } from "@mui/material";
 import Box from "@mui/material/Box";
+import { GoogleTagManager } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+
 import Theme from "@/theme/Theme";
 import Layer from "@/components/layer/Layer";
 
@@ -86,6 +88,7 @@ export default function Layout(props) {
         <Analytics />
         <SpeedInsights />
       </body>
+      <GoogleTagManager gtmId="GTM-NZ6SQS67" />
     </html>
   );
 }

@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { useCookies } from "react-cookie";
 import { useNotification } from "@/swr/base";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 function TimeoutButton(props) {
   const { open, ...other } = props;
@@ -53,6 +54,7 @@ export default function NotificationDialog() {
   const notificationAccepted = cookies.acceptedNotification === true;
 
   const handleClose = () => {
+    sendGTMEvent({ event: "acceptNotification", value: "acceptNotification" });
     setOpen(false);
     setCookie("acceptedNotification", "true", {
       path: "/",
