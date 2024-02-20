@@ -1,10 +1,11 @@
 "use client";
 import * as React from "react";
-import { useContext } from "react";
+import { forwardRef, useContext } from "react";
 import { redirect, useRouter } from "next/navigation";
 import useSWRImmutable from "swr/immutable";
 import {
   Button,
+  Chip,
   Container,
   Paper,
   Table,
@@ -33,6 +34,53 @@ const BaseContainer = ({ children }) => {
     >
       {children}
     </Container>
+  );
+};
+
+const TooltipText = forwardRef(function TooltipText(props, ref) {
+  const { children, ...other } = props;
+  return (
+    <span {...other} ref={ref}>
+      {children}
+    </span>
+  );
+});
+
+const TeacherCell = ({ teacher }) => {
+  return (
+    <TableCell>
+      {teacher.single_week && (
+        <>
+          <Chip label="單周" color="warning" variant="outlined" size="small" />
+          <br />
+        </>
+      )}
+      {teacher.teacher}
+      <br />
+      {teacher.times.map((time) => {
+        const dayTime = time.time.join(", ");
+
+        return (
+          <React.Fragment key={teacher.teacher + time.day + dayTime}>
+            <Tooltip
+              title={
+                <React.Fragment>
+                  <Typography color="inherit" variant="caption">
+                    {time.location}
+                  </Typography>
+                </React.Fragment>
+              }
+            >
+              <TooltipText>
+                {time.day}
+                {time.time.length > 0 ? " / " : ""}
+                {dayTime}
+              </TooltipText>
+            </Tooltip>
+          </React.Fragment>
+        );
+      })}
+    </TableCell>
   );
 };
 
@@ -79,8 +127,18 @@ export default function Home() {
   }
 
   return (
-    <Container maxWidth="lg">
-      {/*<Typography>{JSON.stringify(chosenContext)}</Typography>*/}
+    <Container
+      maxWidth="lg"
+      sx={{
+        my: 2,
+      }}
+    >
+      <Typography>
+        您目前所查詢的條件範圍是
+        <br />
+        {chosenContext.year} 學年度 第 {chosenContext.semester} 學期
+        {/*{JSON.stringify(chosenContext)}*/}
+      </Typography>
       <TableContainer component={Paper}>
         <Table
           sx={{
@@ -108,8 +166,7 @@ export default function Home() {
                 人數
               </TableCell>
               <TableCell rowSpan={2}>校區</TableCell>
-              <TableCell rowSpan={2}>教師</TableCell>
-              <TableCell rowSpan={2}>時間</TableCell>
+              <TableCell rowSpan={2}>教師與時間</TableCell>
               <TableCell rowSpan={2}>備註</TableCell>
             </TableRow>
             <TableRow>
@@ -153,7 +210,7 @@ export default function Home() {
                           </React.Fragment>
                         }
                       >
-                        <>{row.name.chinese.text}</>
+                        <TooltipText>{row.name.chinese.text}</TooltipText>
                       </Tooltip>
                       <br />
                       <Typography color={"red"}>
@@ -168,11 +225,14 @@ export default function Home() {
                           </React.Fragment>
                         }
                       >
-                        <>{row.name.english.text}</>
+                        <TooltipText>{row.name.english.text}</TooltipText>
                       </Tooltip>
                     </TableCell>
                     <TableCell rowSpan={rowSpan}>
-                      {row.full_half} | {row.req_select}
+                      <Chip
+                        label={`${row.full_half} | ${row.req_select}`}
+                        size="small"
+                      />
                       <br />
                       {row.credit} 學分 / {row.lecturing_hours} 小時
                     </TableCell>
@@ -184,18 +244,7 @@ export default function Home() {
                       {row.enrolled.current}
                     </TableCell>
                     <TableCell rowSpan={rowSpan}>{row.campus}</TableCell>
-                    <TableCell>{row.teachers[0]}</TableCell>
-                    <TableCell rowSpan={rowSpan}>
-                      {row.times.map((time, index) => {
-                        return (
-                          <div key={String(time.day) + index}>
-                            {time.day}
-                            {time.time.length > 0 ? " / " : ""}
-                            {time.time.join(", ")}
-                          </div>
-                        );
-                      })}
-                    </TableCell>
+                    <TeacherCell teacher={row.teachers[0]} />
                     <TableCell rowSpan={rowSpan}>
                       <form
                         name="form"
@@ -266,13 +315,8 @@ export default function Home() {
                       return null;
                     }
                     return (
-                      <TableRow
-                        key={teacher}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell>{teacher}</TableCell>
+                      <TableRow key={row.course_code + teacher.teacher}>
+                        <TeacherCell teacher={teacher} />
                       </TableRow>
                     );
                   })}
