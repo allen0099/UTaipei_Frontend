@@ -232,6 +232,9 @@ export default function Home() {
                       <Chip
                         label={`${row.full_half} | ${row.req_select}`}
                         size="small"
+                        color={
+                          row.req_select === "必修" ? "warning" : "secondary"
+                        }
                       />
                       <br />
                       {row.credit} 學分 / {row.lecturing_hours} 小時
